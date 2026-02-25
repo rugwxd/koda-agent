@@ -68,6 +68,7 @@ class AgentLoop:
         cost_tracker: CostTracker,
         trace_collector: TraceCollector | None = None,
         working_memory: WorkingMemory | None = None,
+        on_status: callable | None = None,
     ) -> None:
         self.settings = settings
         self.llm = llm_client
@@ -75,6 +76,7 @@ class AgentLoop:
         self.cost = cost_tracker
         self.trace = trace_collector
         self.memory = working_memory or WorkingMemory(max_items=settings.memory.max_working_items)
+        self._on_status = on_status or (lambda msg: None)
 
     def run(self, task: str, context: str = "") -> AgentResult:
         """Execute a task through the ReAct loop.
@@ -112,6 +114,7 @@ class AgentLoop:
 
             try:
                 # Get LLM response
+                self._on_status(f"Thinking... (iteration {iteration + 1})")
                 response = self.llm.chat(conversation, tools=tool_defs)
 
                 # Add assistant message to conversation
@@ -132,6 +135,16 @@ class AgentLoop:
                 tool_results: list[ToolResultContent] = []
                 for tool_call in response.tool_calls:
                     tool_calls_made.append(tool_call.name)
+
+                    # Show what tool is being used
+                    tool_detail = ""
+                    if tool_call.name in ("read_file", "write_file"):
+                        tool_detail = f" → {tool_call.input.get('path', '')}"
+                    elif tool_call.name == "grep":
+                        tool_detail = f" → '{tool_call.input.get('pattern', '')}'"
+                    elif tool_call.name == "shell":
+                        tool_detail = f" → {tool_call.input.get('command', '')[:40]}"
+                    self._on_status(f"Using {tool_call.name}{tool_detail}")
 
                     result = self.tools.execute(tool_call.name, tool_call.input)
 

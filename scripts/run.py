@@ -11,20 +11,13 @@ import uuid
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from rich.console import Console
-from rich.live import Live
 from rich.panel import Panel
-from rich.syntax import Syntax
 from rich.table import Table
-from rich.text import Text
 
 from src.agent.loop import AgentLoop
-from src.agent.planner import Planner
-from src.agent.router import ComplexityRouter
-from src.cache.task_cache import TaskCache
 from src.code.repo_map import RepoMapBuilder
 from src.config import load_config, setup_logging
 from src.cost.tracker import CostTracker
-from src.critic.verifier import Verifier
 from src.llm.client import LLMClient
 from src.memory.working import WorkingMemory
 from src.tools.code import ASTCheckTool, LintTool, TestRunnerTool
@@ -72,11 +65,13 @@ def display_result(result, cost_tracker, console):
     """Display the agent result with rich formatting."""
     # Response panel
     console.print()
-    console.print(Panel(
-        result.response or "(no response)",
-        title="Koda",
-        border_style="green" if result.success else "red",
-    ))
+    console.print(
+        Panel(
+            result.response or "(no response)",
+            title="Koda",
+            border_style="green" if result.success else "red",
+        )
+    )
 
     # Stats table
     table = Table(show_header=False, box=None, padding=(0, 2))
@@ -98,6 +93,12 @@ def display_result(result, cost_tracker, console):
 def run_interactive(settings, llm_client, tool_registry, cost_tracker, trace_collector):
     """Run in interactive REPL mode."""
     working_memory = WorkingMemory(max_items=settings.memory.max_working_items)
+    status_handle = None
+
+    def on_status(msg: str) -> None:
+        if status_handle is not None:
+            status_handle.update(f"[bold blue]{msg}[/bold blue]")
+
     agent = AgentLoop(
         settings=settings,
         llm_client=llm_client,
@@ -105,6 +106,7 @@ def run_interactive(settings, llm_client, tool_registry, cost_tracker, trace_col
         cost_tracker=cost_tracker,
         trace_collector=trace_collector,
         working_memory=working_memory,
+        on_status=on_status,
     )
 
     console.print(Panel("Koda — AI Coding Agent", style="bold blue"))
@@ -122,8 +124,10 @@ def run_interactive(settings, llm_client, tool_registry, cost_tracker, trace_col
         if task.lower() in ("quit", "exit", "q"):
             break
 
-        with console.status("[bold blue]Thinking...[/bold blue]"):
-            result = agent.run(task)
+        status_handle = console.status("[bold blue]Thinking...[/bold blue]")
+        status_handle.start()
+        result = agent.run(task)
+        status_handle.stop()
 
         display_result(result, cost_tracker, console)
 
