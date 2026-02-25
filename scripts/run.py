@@ -126,6 +126,13 @@ def run_interactive(settings, llm_client, tool_registry, cost_tracker, trace_col
             result = agent.run(task)
 
         display_result(result, cost_tracker, console)
+
+        # Save trace after each task
+        if trace_collector:
+            saved = trace_collector.save()
+            if saved:
+                console.print(f"[dim]Trace saved: {saved}[/dim]")
+
         console.print()
 
 
