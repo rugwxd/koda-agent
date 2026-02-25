@@ -50,6 +50,7 @@ class SemanticMemory:
         if self._model is None:
             try:
                 from sentence_transformers import SentenceTransformer
+
                 self._model = SentenceTransformer(self._embedding_model_name)
                 self._dimension = self._model.get_sentence_embedding_dimension()
             except ImportError:
@@ -61,6 +62,7 @@ class SemanticMemory:
         if self._index is None:
             try:
                 import faiss
+
                 self._index = faiss.IndexFlatIP(self._dimension)
             except ImportError:
                 logger.warning("faiss not available, semantic search disabled")
@@ -125,6 +127,7 @@ class SemanticMemory:
         if index and index.ntotal > 0:
             try:
                 import faiss
+
                 faiss.write_index(index, str(self.index_path))
             except ImportError:
                 pass
@@ -132,12 +135,14 @@ class SemanticMemory:
         # Save entries as JSON
         entries_data = []
         for e in self._entries:
-            entries_data.append({
-                "content": e.content,
-                "category": e.category,
-                "source_task_ids": e.source_task_ids,
-                "metadata": e.metadata,
-            })
+            entries_data.append(
+                {
+                    "content": e.content,
+                    "category": e.category,
+                    "source_task_ids": e.source_task_ids,
+                    "metadata": e.metadata,
+                }
+            )
 
         with open(self.entries_path, "w") as f:
             json.dump(entries_data, f, indent=2)
@@ -150,9 +155,7 @@ class SemanticMemory:
             try:
                 with open(self.entries_path) as f:
                     entries_data = json.load(f)
-                self._entries = [
-                    SemanticEntry(**ed) for ed in entries_data
-                ]
+                self._entries = [SemanticEntry(**ed) for ed in entries_data]
                 logger.info("Loaded %d semantic entries", len(self._entries))
             except (json.JSONDecodeError, KeyError) as e:
                 logger.warning("Failed to load semantic entries: %s", e)
@@ -160,6 +163,7 @@ class SemanticMemory:
         if self.index_path.exists():
             try:
                 import faiss
+
                 self._index = faiss.read_index(str(self.index_path))
             except (ImportError, RuntimeError) as e:
                 logger.warning("Failed to load FAISS index: %s", e)

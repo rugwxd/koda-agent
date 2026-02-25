@@ -64,19 +64,23 @@ class Message:
             if isinstance(block, TextContent):
                 formatted_content.append({"type": "text", "text": block.text})
             elif isinstance(block, ToolUseContent):
-                formatted_content.append({
-                    "type": "tool_use",
-                    "id": block.id,
-                    "name": block.name,
-                    "input": block.input,
-                })
+                formatted_content.append(
+                    {
+                        "type": "tool_use",
+                        "id": block.id,
+                        "name": block.name,
+                        "input": block.input,
+                    }
+                )
             elif isinstance(block, ToolResultContent):
-                formatted_content.append({
-                    "type": "tool_result",
-                    "tool_use_id": block.tool_use_id,
-                    "content": block.content,
-                    "is_error": block.is_error,
-                })
+                formatted_content.append(
+                    {
+                        "type": "tool_result",
+                        "tool_use_id": block.tool_use_id,
+                        "content": block.content,
+                        "is_error": block.is_error,
+                    }
+                )
         return {"role": self.role.value, "content": formatted_content}
 
     @property

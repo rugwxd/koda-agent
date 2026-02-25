@@ -42,9 +42,7 @@ class VerificationResult:
     @property
     def passed(self) -> bool:
         """True if all non-skipped checks passed."""
-        return all(
-            c.status in (CheckStatus.PASSED, CheckStatus.SKIPPED) for c in self.checks
-        )
+        return all(c.status in (CheckStatus.PASSED, CheckStatus.SKIPPED) for c in self.checks)
 
     @property
     def summary(self) -> str:
@@ -105,9 +103,9 @@ class Verifier:
                     self._record_check(check)
                     return result  # Fail fast on syntax errors
         else:
-            result.checks.append(CheckResult(
-                check_name="ast_check", status=CheckStatus.SKIPPED, message="Disabled"
-            ))
+            result.checks.append(
+                CheckResult(check_name="ast_check", status=CheckStatus.SKIPPED, message="Disabled")
+            )
 
         # 2. Lint check
         if self.config.run_lint:
@@ -115,18 +113,18 @@ class Verifier:
                 check = self._run_lint_check(file_path)
                 result.checks.append(check)
         else:
-            result.checks.append(CheckResult(
-                check_name="lint", status=CheckStatus.SKIPPED, message="Disabled"
-            ))
+            result.checks.append(
+                CheckResult(check_name="lint", status=CheckStatus.SKIPPED, message="Disabled")
+            )
 
         # 3. Test execution
         if self.config.run_tests:
             check = self._run_tests(test_path)
             result.checks.append(check)
         else:
-            result.checks.append(CheckResult(
-                check_name="tests", status=CheckStatus.SKIPPED, message="Disabled"
-            ))
+            result.checks.append(
+                CheckResult(check_name="tests", status=CheckStatus.SKIPPED, message="Disabled")
+            )
 
         self._record_check_summary(result)
         return result
@@ -186,18 +184,24 @@ class Verifier:
     def _record_check(self, check: CheckResult) -> None:
         """Record a check result in the trace."""
         if self.trace:
-            self.trace.record(EventType.CRITIC_CHECK, {
-                "check": check.check_name,
-                "status": check.status.value,
-                "message": check.message,
-            })
+            self.trace.record(
+                EventType.CRITIC_CHECK,
+                {
+                    "check": check.check_name,
+                    "status": check.status.value,
+                    "message": check.message,
+                },
+            )
 
     def _record_check_summary(self, result: VerificationResult) -> None:
         """Record the full verification summary in the trace."""
         if self.trace:
-            self.trace.record(EventType.CRITIC_CHECK, {
-                "summary": result.summary,
-                "passed": result.passed,
-                "total_checks": len(result.checks),
-                "failed_checks": len(result.errors),
-            })
+            self.trace.record(
+                EventType.CRITIC_CHECK,
+                {
+                    "summary": result.summary,
+                    "passed": result.passed,
+                    "total_checks": len(result.checks),
+                    "failed_checks": len(result.errors),
+                },
+            )

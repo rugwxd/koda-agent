@@ -1,7 +1,5 @@
 """Tests for the task chain cache."""
 
-import pytest
-
 from src.cache.task_cache import TaskCache
 from src.config import CacheConfig
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 import subprocess
-from pathlib import Path
 
 from pydantic import BaseModel, Field
 
@@ -37,7 +36,9 @@ class GitStatusTool(BaseTool):
     """Show the working tree status."""
 
     name = "git_status"
-    description = "Show the git working tree status including staged, unstaged, and untracked files."
+    description = (
+        "Show the git working tree status including staged, unstaged, and untracked files."
+    )
 
     class InputModel(BaseModel):
         repo_path: str = Field(default=".", description="Path to the git repository")

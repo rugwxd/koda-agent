@@ -18,7 +18,9 @@ class ASTCheckTool(BaseTool):
     """Validate Python syntax using AST parsing."""
 
     name = "ast_check"
-    description = "Check if a Python file has valid syntax by parsing its AST. Returns syntax errors if any."
+    description = (
+        "Check if a Python file has valid syntax by parsing its AST. Returns syntax errors if any."
+    )
 
     class InputModel(BaseModel):
         path: str = Field(description="Path to the Python file to check")
@@ -90,7 +92,9 @@ class TestRunnerTool(BaseTool):
     class InputModel(BaseModel):
         path: str = Field(default="tests/", description="File or directory to test")
         verbose: bool = Field(default=True, description="Show verbose output")
-        specific_test: str = Field(default="", description="Specific test name to run (e.g., test_foo)")
+        specific_test: str = Field(
+            default="", description="Specific test name to run (e.g., test_foo)"
+        )
 
     def execute(self, **kwargs) -> ToolResult:
         params = self.InputModel(**kwargs)

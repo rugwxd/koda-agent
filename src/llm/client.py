@@ -79,11 +79,14 @@ class LLMClient:
 
         # Record request in trace
         if self.trace:
-            self.trace.record(EventType.LLM_REQUEST, {
-                "model": model,
-                "message_count": len(conversation.messages),
-                "tool_count": len(tools) if tools else 0,
-            })
+            self.trace.record(
+                EventType.LLM_REQUEST,
+                {
+                    "model": model,
+                    "message_count": len(conversation.messages),
+                    "tool_count": len(tools) if tools else 0,
+                },
+            )
 
         logger.debug("Sending request to %s (%d messages)", model, len(conversation.messages))
 
@@ -96,11 +99,13 @@ class LLMClient:
             if block.type == "text":
                 content_blocks.append(TextContent(text=block.text))
             elif block.type == "tool_use":
-                content_blocks.append(ToolUseContent(
-                    id=block.id,
-                    name=block.name,
-                    input=block.input,
-                ))
+                content_blocks.append(
+                    ToolUseContent(
+                        id=block.id,
+                        name=block.name,
+                        input=block.input,
+                    )
+                )
 
         # Extract usage
         usage = response.usage
@@ -118,14 +123,17 @@ class LLMClient:
 
         # Record response in trace
         if self.trace:
-            self.trace.record(EventType.LLM_RESPONSE, {
-                "model": model,
-                "stop_reason": response.stop_reason,
-                "input_tokens": input_tokens,
-                "output_tokens": output_tokens,
-                "cache_read_tokens": cache_read,
-                "has_tool_calls": response.stop_reason == "tool_use",
-            })
+            self.trace.record(
+                EventType.LLM_RESPONSE,
+                {
+                    "model": model,
+                    "stop_reason": response.stop_reason,
+                    "input_tokens": input_tokens,
+                    "output_tokens": output_tokens,
+                    "cache_read_tokens": cache_read,
+                    "has_tool_calls": response.stop_reason == "tool_use",
+                },
+            )
 
         llm_response = LLMResponse(
             content=content_blocks,

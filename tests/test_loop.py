@@ -1,7 +1,5 @@
 """Tests for the agent loop (unit tests without LLM calls)."""
 
-import pytest
-
 from src.agent.loop import AgentResult
 
 

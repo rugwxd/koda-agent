@@ -2,8 +2,6 @@
 
 import time
 
-import pytest
-
 from src.memory.episodic import Episode, EpisodicMemory
 from src.memory.working import WorkingMemory
 
@@ -92,18 +90,32 @@ class TestEpisodicMemory:
         db_path = str(tmp_path / "test.db")
         mem = EpisodicMemory(db_path=db_path)
 
-        mem.store(Episode(
-            task_id="t1", task_description="Fix login bug",
-            outcome="success", summary="Fixed auth",
-            tool_chain=[], files_modified=[], duration_seconds=10,
-            cost_usd=0.01, timestamp=time.time(),
-        ))
-        mem.store(Episode(
-            task_id="t2", task_description="Add tests for API",
-            outcome="success", summary="Added pytest cases",
-            tool_chain=[], files_modified=[], duration_seconds=20,
-            cost_usd=0.02, timestamp=time.time(),
-        ))
+        mem.store(
+            Episode(
+                task_id="t1",
+                task_description="Fix login bug",
+                outcome="success",
+                summary="Fixed auth",
+                tool_chain=[],
+                files_modified=[],
+                duration_seconds=10,
+                cost_usd=0.01,
+                timestamp=time.time(),
+            )
+        )
+        mem.store(
+            Episode(
+                task_id="t2",
+                task_description="Add tests for API",
+                outcome="success",
+                summary="Added pytest cases",
+                tool_chain=[],
+                files_modified=[],
+                duration_seconds=20,
+                cost_usd=0.02,
+                timestamp=time.time(),
+            )
+        )
 
         results = mem.search("login")
         assert len(results) == 1
@@ -114,18 +126,32 @@ class TestEpisodicMemory:
         db_path = str(tmp_path / "test.db")
         mem = EpisodicMemory(db_path=db_path)
 
-        mem.store(Episode(
-            task_id="s1", task_description="Success task",
-            outcome="success", summary="Worked",
-            tool_chain=[], files_modified=[], duration_seconds=5,
-            cost_usd=0.01, timestamp=time.time(),
-        ))
-        mem.store(Episode(
-            task_id="f1", task_description="Failed task",
-            outcome="failure", summary="Broke",
-            tool_chain=[], files_modified=[], duration_seconds=5,
-            cost_usd=0.01, timestamp=time.time(),
-        ))
+        mem.store(
+            Episode(
+                task_id="s1",
+                task_description="Success task",
+                outcome="success",
+                summary="Worked",
+                tool_chain=[],
+                files_modified=[],
+                duration_seconds=5,
+                cost_usd=0.01,
+                timestamp=time.time(),
+            )
+        )
+        mem.store(
+            Episode(
+                task_id="f1",
+                task_description="Failed task",
+                outcome="failure",
+                summary="Broke",
+                tool_chain=[],
+                files_modified=[],
+                duration_seconds=5,
+                cost_usd=0.01,
+                timestamp=time.time(),
+            )
+        )
 
         successful = mem.get_successful()
         assert len(successful) == 1

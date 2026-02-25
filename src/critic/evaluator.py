@@ -112,7 +112,9 @@ class Evaluator:
             return EvaluationResult(verdict="pass", suggestions=[])
 
         prompt = EVALUATOR_PROMPT.format(code=code[:3000], task=task)
-        conversation = Conversation(system_prompt="You are a precise code reviewer. Respond only with JSON.")
+        conversation = Conversation(
+            system_prompt="You are a precise code reviewer. Respond only with JSON."
+        )
         conversation.add_user_message(prompt)
 
         response = self.llm.chat(
@@ -140,11 +142,13 @@ class Evaluator:
             for dimension in ["correctness", "style", "edge_cases", "simplicity"]:
                 if dimension in data:
                     dim_data = data[dimension]
-                    result.scores.append(DimensionScore(
-                        name=dimension,
-                        score=max(1, min(5, int(dim_data.get("score", 3)))),
-                        reasoning=dim_data.get("reasoning", ""),
-                    ))
+                    result.scores.append(
+                        DimensionScore(
+                            name=dimension,
+                            score=max(1, min(5, int(dim_data.get("score", 3)))),
+                            reasoning=dim_data.get("reasoning", ""),
+                        )
+                    )
 
             result.verdict = data.get("overall_verdict", "fail")
             result.suggestions = data.get("suggestions", [])

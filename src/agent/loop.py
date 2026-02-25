@@ -5,16 +5,13 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Any
 
 from src.config import Settings
 from src.cost.tracker import BudgetExceededError, CostTracker
 from src.llm.client import LLMClient
 from src.llm.models import (
     Conversation,
-    TextContent,
     ToolResultContent,
-    ToolUseContent,
 )
 from src.memory.working import WorkingMemory
 from src.tools.registry import ToolRegistry
@@ -150,11 +147,15 @@ class AgentLoop:
                         result.output[:200] if result.output else result.error,
                     )
 
-                    tool_results.append(ToolResultContent(
-                        tool_use_id=tool_call.id,
-                        content=result.output if result.success else f"Error: {result.error}\n{result.output}",
-                        is_error=not result.success,
-                    ))
+                    tool_results.append(
+                        ToolResultContent(
+                            tool_use_id=tool_call.id,
+                            content=result.output
+                            if result.success
+                            else f"Error: {result.error}\n{result.output}",
+                            is_error=not result.success,
+                        )
+                    )
 
                 # Add tool results to conversation
                 conversation.add_tool_results(tool_results)
@@ -163,7 +164,9 @@ class AgentLoop:
                 logger.warning("Budget exceeded: %s", e)
                 if self.trace:
                     self.trace.record(EventType.BUDGET_WARNING, {"error": str(e)})
-                final_response = f"Task stopped: budget exceeded (${e.spent:.4f} of ${e.budget:.4f})"
+                final_response = (
+                    f"Task stopped: budget exceeded (${e.spent:.4f} of ${e.budget:.4f})"
+                )
                 if span:
                     self.trace.end_span(span)
                 break

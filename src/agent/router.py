@@ -13,18 +13,39 @@ logger = logging.getLogger(__name__)
 
 # Keywords that suggest multi-step, complex tasks
 COMPLEX_KEYWORDS = {
-    "refactor", "migrate", "restructure", "redesign", "overhaul",
-    "add feature", "implement", "build", "create new",
-    "across files", "multiple files", "entire codebase",
-    "test suite", "end to end", "integration",
-    "optimize", "performance", "benchmark",
+    "refactor",
+    "migrate",
+    "restructure",
+    "redesign",
+    "overhaul",
+    "add feature",
+    "implement",
+    "build",
+    "create new",
+    "across files",
+    "multiple files",
+    "entire codebase",
+    "test suite",
+    "end to end",
+    "integration",
+    "optimize",
+    "performance",
+    "benchmark",
 }
 
 # Keywords that suggest simple, single-step tasks
 SIMPLE_KEYWORDS = {
-    "fix typo", "rename", "add import", "remove unused",
-    "update version", "change value", "read file",
-    "what is", "explain", "show me", "find",
+    "fix typo",
+    "rename",
+    "add import",
+    "remove unused",
+    "update version",
+    "change value",
+    "read file",
+    "what is",
+    "explain",
+    "show me",
+    "find",
 }
 
 
@@ -114,7 +135,8 @@ class ComplexityRouter:
         score = max(0.0, min(1.0, score + 0.5))
 
         complexity = (
-            TaskComplexity.COMPLEX if score >= self.config.complexity_threshold
+            TaskComplexity.COMPLEX
+            if score >= self.config.complexity_threshold
             else TaskComplexity.SIMPLE
         )
 
@@ -124,7 +146,11 @@ class ComplexityRouter:
             reason="; ".join(reasons) if reasons else "Default classification",
         )
 
-        logger.info("Routed task as %s (score=%.2f, confidence=%.2f)",
-                     complexity.value, score, decision.confidence)
+        logger.info(
+            "Routed task as %s (score=%.2f, confidence=%.2f)",
+            complexity.value,
+            score,
+            decision.confidence,
+        )
 
         return decision

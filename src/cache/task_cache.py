@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import sqlite3
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -82,6 +82,7 @@ class TaskCache:
         if self._model is None:
             try:
                 from sentence_transformers import SentenceTransformer
+
                 self._model = SentenceTransformer("all-MiniLM-L6-v2")
                 self._dimension = self._model.get_sentence_embedding_dimension()
             except ImportError:
@@ -128,11 +129,14 @@ class TaskCache:
 
         if best_score < self.config.similarity_threshold:
             if self.trace:
-                self.trace.record(EventType.CACHE_MISS, {
-                    "task": task[:100],
-                    "best_score": round(best_score, 3),
-                    "threshold": self.config.similarity_threshold,
-                })
+                self.trace.record(
+                    EventType.CACHE_MISS,
+                    {
+                        "task": task[:100],
+                        "best_score": round(best_score, 3),
+                        "threshold": self.config.similarity_threshold,
+                    },
+                )
             return None
 
         # Fetch the cached chain
@@ -146,7 +150,9 @@ class TaskCache:
             return None
 
         # Increment hit count
-        self._conn.execute("UPDATE task_chains SET hit_count = hit_count + 1 WHERE id = ?", (chain_id,))
+        self._conn.execute(
+            "UPDATE task_chains SET hit_count = hit_count + 1 WHERE id = ?", (chain_id,)
+        )
         self._conn.commit()
 
         cached = CachedChain(
@@ -159,16 +165,23 @@ class TaskCache:
         )
 
         if self.trace:
-            self.trace.record(EventType.CACHE_HIT, {
-                "task": task[:100],
-                "matched_task": cached.task_description[:100],
-                "similarity": round(best_score, 3),
-                "hit_count": cached.hit_count,
-                "saved_cost": round(cached.cost_usd, 4),
-            })
+            self.trace.record(
+                EventType.CACHE_HIT,
+                {
+                    "task": task[:100],
+                    "matched_task": cached.task_description[:100],
+                    "similarity": round(best_score, 3),
+                    "hit_count": cached.hit_count,
+                    "saved_cost": round(cached.cost_usd, 4),
+                },
+            )
 
-        logger.info("Cache hit (%.2f): '%s' matched '%s'",
-                     best_score, task[:50], cached.task_description[:50])
+        logger.info(
+            "Cache hit (%.2f): '%s' matched '%s'",
+            best_score,
+            task[:50],
+            cached.task_description[:50],
+        )
         return cached
 
     def store(
@@ -202,7 +215,13 @@ class TaskCache:
         self._conn.execute(
             """INSERT INTO task_chains (task_description, tool_chain, files_modified, cost_usd, embedding)
                VALUES (?, ?, ?, ?, ?)""",
-            (task, json.dumps(tool_chain), json.dumps(files_modified), cost_usd, embedding.tobytes()),
+            (
+                task,
+                json.dumps(tool_chain),
+                json.dumps(files_modified),
+                cost_usd,
+                embedding.tobytes(),
+            ),
         )
         self._conn.commit()
 
@@ -220,7 +239,9 @@ class TaskCache:
     @property
     def total_hits(self) -> int:
         """Total cache hits across all entries."""
-        result = self._conn.execute("SELECT COALESCE(SUM(hit_count), 0) FROM task_chains").fetchone()
+        result = self._conn.execute(
+            "SELECT COALESCE(SUM(hit_count), 0) FROM task_chains"
+        ).fetchone()
         return result[0]
 
     def close(self) -> None:

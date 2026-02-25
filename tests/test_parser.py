@@ -1,7 +1,5 @@
 """Tests for the Python AST parser."""
 
-import pytest
-
 from src.code.parser import PythonParser
 
 

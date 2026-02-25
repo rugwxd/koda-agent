@@ -1,7 +1,5 @@
 """Tests for the automated code verifier."""
 
-import pytest
-
 from src.config import CriticConfig
 from src.critic.verifier import CheckStatus, Verifier
 

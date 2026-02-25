@@ -45,7 +45,7 @@ class RepoMap:
         """
         max_chars = max_tokens * 4
         lines = ["Repository Map", "=" * 40]
-        current_chars = sum(len(l) for l in lines)
+        current_chars = sum(len(line) for line in lines)
 
         # Sort by reference score (most important files first)
         sorted_entries = sorted(self.entries, key=lambda e: e.reference_score, reverse=True)
@@ -116,12 +116,14 @@ class RepoMapBuilder:
                     sigs.append(f"  {sym.signature}")
 
             total_symbols += len(pf.symbols)
-            entries.append(FileEntry(
-                path=rel_path,
-                symbols=sigs,
-                import_count=len(pf.imports),
-                reference_score=reference_counts.get(rel_path, 0.0),
-            ))
+            entries.append(
+                FileEntry(
+                    path=rel_path,
+                    symbols=sigs,
+                    import_count=len(pf.imports),
+                    reference_score=reference_counts.get(rel_path, 0.0),
+                )
+            )
 
         repo_map = RepoMap(
             entries=entries,

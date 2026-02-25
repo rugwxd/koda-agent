@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
-from src.config import LLMConfig
 from src.memory.episodic import Episode, EpisodicMemory
 from src.memory.semantic import SemanticEntry, SemanticMemory
 
@@ -87,8 +85,11 @@ class MemoryConsolidator:
         self._last_consolidated_count = self.episodic.count
         self.semantic.save()
 
-        logger.info("Consolidated %d new semantic entries from %d episodes",
-                     len(new_entries), len(episodes))
+        logger.info(
+            "Consolidated %d new semantic entries from %d episodes",
+            len(new_entries),
+            len(episodes),
+        )
         return new_entries
 
     @staticmethod

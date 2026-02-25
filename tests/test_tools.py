@@ -2,8 +2,6 @@
 
 from pathlib import Path
 
-import pytest
-
 from src.config import ToolsConfig
 from src.tools.filesystem import GlobTool, ListDirectoryTool, ReadFileTool, WriteFileTool
 from src.tools.search import GrepTool
@@ -29,7 +27,7 @@ class TestReadFileTool:
         result = tool.execute(path=str(sample_python_file), offset=5, max_lines=3)
         assert result.success
         lines = result.output.strip().split("\n")
-        assert len([l for l in lines if l.strip() and not l.startswith("[")]) <= 3
+        assert len([ln for ln in lines if ln.strip() and not ln.startswith("[")]) <= 3
 
 
 class TestWriteFileTool:
@@ -95,7 +93,9 @@ class TestGrepTool:
 
     def test_grep_case_insensitive(self, sample_python_file):
         tool = GrepTool()
-        result = tool.execute(pattern="CALCULATOR", path=str(sample_python_file), case_insensitive=True)
+        result = tool.execute(
+            pattern="CALCULATOR", path=str(sample_python_file), case_insensitive=True
+        )
         assert result.success
         assert "Calculator" in result.output
 

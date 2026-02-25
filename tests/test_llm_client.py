@@ -1,7 +1,5 @@
 """Tests for LLM models and conversation management."""
 
-import pytest
-
 from src.llm.models import (
     Conversation,
     LLMResponse,
@@ -50,12 +48,16 @@ class TestConversation:
     def test_add_tool_results(self):
         conv = Conversation()
         conv.add_user_message("do something")
-        conv.add_assistant_message([
-            ToolUseContent(id="tc_1", name="read", input={"path": "x"}),
-        ])
-        conv.add_tool_results([
-            ToolResultContent(tool_use_id="tc_1", content="file contents"),
-        ])
+        conv.add_assistant_message(
+            [
+                ToolUseContent(id="tc_1", name="read", input={"path": "x"}),
+            ]
+        )
+        conv.add_tool_results(
+            [
+                ToolResultContent(tool_use_id="tc_1", content="file contents"),
+            ]
+        )
         assert len(conv.messages) == 3
         assert conv.messages[2].role == Role.USER
 

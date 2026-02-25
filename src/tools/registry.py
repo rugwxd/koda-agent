@@ -60,21 +60,27 @@ class ToolRegistry:
 
         # Record tool call in trace
         if self.trace:
-            self.trace.record(EventType.TOOL_CALL, {
-                "tool": name,
-                "input": input_data,
-            })
+            self.trace.record(
+                EventType.TOOL_CALL,
+                {
+                    "tool": name,
+                    "input": input_data,
+                },
+            )
 
         result = tool.safe_execute(**input_data)
 
         # Record tool result in trace
         if self.trace:
-            self.trace.record(EventType.TOOL_RESULT, {
-                "tool": name,
-                "success": result.success,
-                "output_length": len(result.output),
-                "error": result.error,
-            })
+            self.trace.record(
+                EventType.TOOL_RESULT,
+                {
+                    "tool": name,
+                    "success": result.success,
+                    "output_length": len(result.output),
+                    "error": result.error,
+                },
+            )
 
         return result
 

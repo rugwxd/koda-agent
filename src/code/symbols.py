@@ -96,19 +96,19 @@ class SymbolIndex:
 
             # Exact match
             if name_lower == query_lower or qualified_lower == query_lower:
-                matches.append(SymbolMatch(
-                    symbol=sm.symbol, file_path=sm.file_path, relevance=1.0
-                ))
+                matches.append(
+                    SymbolMatch(symbol=sm.symbol, file_path=sm.file_path, relevance=1.0)
+                )
             # Prefix match
             elif name_lower.startswith(query_lower):
-                matches.append(SymbolMatch(
-                    symbol=sm.symbol, file_path=sm.file_path, relevance=0.8
-                ))
+                matches.append(
+                    SymbolMatch(symbol=sm.symbol, file_path=sm.file_path, relevance=0.8)
+                )
             # Substring match
             elif query_lower in name_lower or query_lower in qualified_lower:
-                matches.append(SymbolMatch(
-                    symbol=sm.symbol, file_path=sm.file_path, relevance=0.5
-                ))
+                matches.append(
+                    SymbolMatch(symbol=sm.symbol, file_path=sm.file_path, relevance=0.5)
+                )
 
         matches.sort(key=lambda m: (-m.relevance, m.symbol.name))
         return matches[:max_results]

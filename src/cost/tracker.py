@@ -101,7 +101,9 @@ class CostTracker:
         if total > budget * 0.8:
             logger.warning(
                 "Cost warning: $%.4f of $%.4f budget (%.0f%%)",
-                total, budget, (total / budget) * 100,
+                total,
+                budget,
+                (total / budget) * 100,
             )
 
         if total > budget:
@@ -148,7 +150,5 @@ class CostTracker:
             "output_tokens": self.total_output_tokens,
             "cache_savings_usd": round(self.cache_savings, 6),
             "api_calls": self.call_count,
-            "budget_remaining_usd": round(
-                self.config.budget_per_task_usd - self.total_cost, 6
-            ),
+            "budget_remaining_usd": round(self.config.budget_per_task_usd - self.total_cost, 6),
         }

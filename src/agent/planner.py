@@ -8,7 +8,7 @@ from enum import Enum
 
 from src.config import PlannerConfig
 from src.llm.client import LLMClient
-from src.llm.models import Conversation, TextContent
+from src.llm.models import Conversation
 from src.trace.collector import TraceCollector
 from src.trace.models import EventType
 
@@ -152,12 +152,15 @@ class Planner:
         plan = ExecutionPlan(task=task, steps=steps)
 
         if self.trace:
-            self.trace.record(EventType.PLAN_STEP, {
-                "action": "created",
-                "task": task,
-                "step_count": len(steps),
-                "steps": [s.description for s in steps],
-            })
+            self.trace.record(
+                EventType.PLAN_STEP,
+                {
+                    "action": "created",
+                    "task": task,
+                    "step_count": len(steps),
+                    "steps": [s.description for s in steps],
+                },
+            )
 
         logger.info("Created plan with %d steps for: %s", len(steps), task[:80])
         return plan
@@ -184,11 +187,14 @@ class Planner:
         new_plan.failure_count = plan.failure_count + 1
 
         if self.trace:
-            self.trace.record(EventType.PLAN_STEP, {
-                "action": "replanned",
-                "attempt": new_plan.failure_count,
-                "new_step_count": len(new_plan.steps),
-            })
+            self.trace.record(
+                EventType.PLAN_STEP,
+                {
+                    "action": "replanned",
+                    "attempt": new_plan.failure_count,
+                    "new_step_count": len(new_plan.steps),
+                },
+            )
 
         return new_plan
 

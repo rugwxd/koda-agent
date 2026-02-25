@@ -1,8 +1,5 @@
 """Tests for the repository map builder."""
 
-import pytest
-
-from src.code.parser import PythonParser
 from src.code.repo_map import RepoMapBuilder
 
 
@@ -12,9 +9,7 @@ class TestRepoMapBuilder:
         (tmp_path / "main.py").write_text(
             "from helper import do_thing\n\ndef main():\n    do_thing()\n"
         )
-        (tmp_path / "helper.py").write_text(
-            "def do_thing():\n    return 42\n"
-        )
+        (tmp_path / "helper.py").write_text("def do_thing():\n    return 42\n")
 
         builder = RepoMapBuilder()
         repo_map = builder.build(tmp_path)

@@ -22,7 +22,9 @@ class ShellTool(BaseTool):
     class InputModel(BaseModel):
         command: str = Field(description="Shell command to execute")
         working_dir: str = Field(default=".", description="Working directory for the command")
-        timeout: int | None = Field(default=None, description="Timeout in seconds (uses default if not set)")
+        timeout: int | None = Field(
+            default=None, description="Timeout in seconds (uses default if not set)"
+        )
 
     def __init__(self, config: ToolsConfig) -> None:
         self._config = config

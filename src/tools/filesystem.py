@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-import fnmatch
 import logging
-import os
 from pathlib import Path
 
 from pydantic import BaseModel, Field

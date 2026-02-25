@@ -1,9 +1,5 @@
 """Tests for configuration loading and validation."""
 
-from pathlib import Path
-
-import pytest
-
 from src.config import LLMConfig, Settings, load_config
 
 

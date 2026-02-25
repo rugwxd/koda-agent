@@ -1,11 +1,7 @@
 """Tests for trace models and collector."""
 
 import json
-import time
 
-import pytest
-
-from src.trace.collector import TraceCollector
 from src.trace.models import EventType, TraceEvent, TraceSpan
 
 

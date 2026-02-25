@@ -39,9 +39,19 @@ class ToolsConfig(BaseModel):
     shell_timeout: int = 30
     max_file_size: int = 1_048_576
     sandbox_enabled: bool = True
-    allowed_commands: list[str] = Field(default_factory=lambda: [
-        "python", "pytest", "ruff", "git", "ls", "cat", "grep", "find", "echo",
-    ])
+    allowed_commands: list[str] = Field(
+        default_factory=lambda: [
+            "python",
+            "pytest",
+            "ruff",
+            "git",
+            "ls",
+            "cat",
+            "grep",
+            "find",
+            "echo",
+        ]
+    )
 
 
 class MemoryConfig(BaseModel):

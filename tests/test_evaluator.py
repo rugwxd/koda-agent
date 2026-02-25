@@ -1,27 +1,26 @@
 """Tests for the LLM evaluator response parsing."""
 
-import pytest
-
 from src.critic.evaluator import Evaluator
 
 
 class TestEvaluatorParsing:
     def test_parse_valid_json(self):
         """Test parsing a well-formed evaluation response."""
-        from src.config import CriticConfig
         from unittest.mock import MagicMock
+
+        from src.config import CriticConfig
 
         config = CriticConfig(rubric_enabled=True)
         evaluator = Evaluator(config=config, llm_client=MagicMock())
 
-        text = '''{
+        text = """{
             "correctness": {"score": 4, "reasoning": "Logic is sound"},
             "style": {"score": 5, "reasoning": "Clean code"},
             "edge_cases": {"score": 3, "reasoning": "Missing null check"},
             "simplicity": {"score": 4, "reasoning": "Well focused"},
             "overall_verdict": "pass",
             "suggestions": ["Add null check for input"]
-        }'''
+        }"""
 
         result = evaluator._parse_evaluation(text)
         assert result.passed
@@ -30,8 +29,9 @@ class TestEvaluatorParsing:
         assert len(result.suggestions) == 1
 
     def test_parse_invalid_json(self):
-        from src.config import CriticConfig
         from unittest.mock import MagicMock
+
+        from src.config import CriticConfig
 
         config = CriticConfig()
         evaluator = Evaluator(config=config, llm_client=MagicMock())
@@ -41,13 +41,14 @@ class TestEvaluatorParsing:
         assert result.passed
 
     def test_parse_markdown_wrapped_json(self):
-        from src.config import CriticConfig
         from unittest.mock import MagicMock
+
+        from src.config import CriticConfig
 
         config = CriticConfig()
         evaluator = Evaluator(config=config, llm_client=MagicMock())
 
-        text = '''```json
+        text = """```json
 {
     "correctness": {"score": 5, "reasoning": "Perfect"},
     "style": {"score": 4, "reasoning": "Good"},
@@ -56,15 +57,16 @@ class TestEvaluatorParsing:
     "overall_verdict": "pass",
     "suggestions": []
 }
-```'''
+```"""
 
         result = evaluator._parse_evaluation(text)
         assert result.passed
         assert result.average_score == 4.5
 
     def test_score_clamping(self):
-        from src.config import CriticConfig
         from unittest.mock import MagicMock
+
+        from src.config import CriticConfig
 
         config = CriticConfig()
         evaluator = Evaluator(config=config, llm_client=MagicMock())
@@ -75,17 +77,18 @@ class TestEvaluatorParsing:
         assert result.scores[0].score == 5
 
     def test_summary(self):
-        from src.config import CriticConfig
         from unittest.mock import MagicMock
+
+        from src.config import CriticConfig
 
         config = CriticConfig()
         evaluator = Evaluator(config=config, llm_client=MagicMock())
 
-        text = '''{
+        text = """{
             "correctness": {"score": 4, "reasoning": "Good"},
             "overall_verdict": "pass",
             "suggestions": ["Test more"]
-        }'''
+        }"""
         result = evaluator._parse_evaluation(text)
         summary = result.summary
         assert "PASS" in summary

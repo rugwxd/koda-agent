@@ -224,22 +224,22 @@ class PythonParser:
         try:
             tree = ast_mod.parse(source, filename=path)
         except SyntaxError as e:
-            return ParsedFile(
-                path=path, symbols=[], imports=[], errors=[f"Syntax error: {e}"]
-            )
+            return ParsedFile(path=path, symbols=[], imports=[], errors=[f"Syntax error: {e}"])
 
         for node in ast_mod.iter_child_nodes(tree):
             if isinstance(node, ast_mod.FunctionDef | ast_mod.AsyncFunctionDef):
                 sig = f"def {node.name}({ast_mod.dump(node.args)})"
                 doc = ast_mod.get_docstring(node) or ""
-                symbols.append(Symbol(
-                    name=node.name,
-                    kind="function",
-                    line=node.lineno,
-                    end_line=node.end_lineno or node.lineno,
-                    signature=sig,
-                    docstring=doc,
-                ))
+                symbols.append(
+                    Symbol(
+                        name=node.name,
+                        kind="function",
+                        line=node.lineno,
+                        end_line=node.end_lineno or node.lineno,
+                        signature=sig,
+                        docstring=doc,
+                    )
+                )
 
             elif isinstance(node, ast_mod.ClassDef):
                 bases = ", ".join(ast_mod.dump(b) for b in node.bases)

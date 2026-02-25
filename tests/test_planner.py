@@ -1,7 +1,5 @@
 """Tests for the planner step parsing."""
 
-import pytest
-
 from src.agent.planner import ExecutionPlan, Planner, PlanStep, StepStatus
 
 
@@ -68,7 +66,9 @@ class TestExecutionPlan:
         plan = ExecutionPlan(
             task="build feature",
             steps=[
-                PlanStep(index=1, description="Read code", status=StepStatus.COMPLETED, result="OK"),
+                PlanStep(
+                    index=1, description="Read code", status=StepStatus.COMPLETED, result="OK"
+                ),
                 PlanStep(index=2, description="Write tests", status=StepStatus.PENDING),
             ],
         )
