@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  agent:
+    build: .
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./data:/app/data
+      - ./configs:/app/configs
+    stdin_open: true
+    tty: true
+
+  dashboard:
+    build: .
+    entrypoint: ["streamlit", "run", "dashboard/app.py", "--server.port=8501"]
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - agent
