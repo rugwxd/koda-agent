@@ -160,6 +160,10 @@ def setup_logging(config: LoggingConfig) -> None:
     log_file = Path(config.file)
     log_file.parent.mkdir(parents=True, exist_ok=True)
 
+    # Suppress noisy HTTP client logs
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+
     logging.basicConfig(
         level=getattr(logging, config.level.upper(), logging.INFO),
         format=config.format,
