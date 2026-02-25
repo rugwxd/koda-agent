@@ -1,0 +1,15 @@
+anthropic>=0.39.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+pyyaml>=6.0.1
+tree-sitter>=0.23.0
+tree-sitter-python>=0.23.0
+faiss-cpu>=1.7.4
+sentence-transformers>=2.2.2
+rich>=13.7.0
+streamlit>=1.29.0
+ruff>=0.1.9
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.23.0
+numpy>=1.24.0

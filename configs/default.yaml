@@ -1,0 +1,66 @@
+llm:
+  model: "claude-sonnet-4-20250514"
+  max_tokens: 4096
+  temperature: 0.0
+  max_tool_iterations: 25
+  escalation_threshold: 3
+
+planner:
+  complexity_threshold: 0.6
+  max_plan_steps: 10
+  replan_after_failures: 2
+
+tools:
+  shell_timeout: 30
+  max_file_size: 1048576  # 1MB
+  sandbox_enabled: true
+  allowed_commands:
+    - "python"
+    - "pytest"
+    - "ruff"
+    - "git"
+    - "ls"
+    - "cat"
+    - "grep"
+    - "find"
+    - "echo"
+
+memory:
+  episodic_db_path: "data/episodic.db"
+  semantic_index_path: "data/semantic.faiss"
+  embedding_model: "all-MiniLM-L6-v2"
+  max_working_items: 20
+  consolidation_threshold: 5
+
+critic:
+  max_iterations: 3
+  run_tests: true
+  run_lint: true
+  ast_check: true
+  rubric_enabled: true
+
+cache:
+  db_path: "data/cache.db"
+  similarity_threshold: 0.85
+  enabled: true
+  max_entries: 1000
+
+cost:
+  budget_per_task_usd: 0.50
+  pricing:
+    claude-sonnet-4-20250514:
+      input_per_1k: 0.003
+      output_per_1k: 0.015
+    claude-haiku-4-5-20251001:
+      input_per_1k: 0.001
+      output_per_1k: 0.005
+
+trace:
+  enabled: true
+  log_dir: "data/traces"
+  stream_to_dashboard: false
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s | %(name)s | %(levelname)s | %(message)s"
+  file: "data/koda.log"
