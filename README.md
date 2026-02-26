@@ -5,7 +5,7 @@ Production-grade AI coding agent built from scratch — no LangChain, no CrewAI.
 ## Quick Start (3 commands)
 
 ```bash
-git clone https://github.com/rugwxd/koda-agent.git && cd koda-agent
+git clone https://github.com/rugwed9/koda-agent.git && cd koda-agent
 python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
 export ANTHROPIC_API_KEY="your-key" && python3 scripts/run.py
 ```
